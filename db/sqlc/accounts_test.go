@@ -9,10 +9,10 @@ import (
 )
 
 func TestCreateAccount(t *testing.T) {
-	createRandomAccount(t)
+	CreateRandomAccount(t)
 }
 
-func createRandomAccount(t *testing.T) Account {
+func CreateRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
 		Owner:    util.RandomOwner(),
 		Balance:  util.RandomMoney(),
@@ -31,7 +31,7 @@ func createRandomAccount(t *testing.T) Account {
 }
 
 func TestGetAccountById(t *testing.T) {
-	account1 := createRandomAccount(t)
+	account1 := CreateRandomAccount(t)
 	account, err := testQueries.GetAcountById(context.Background(), int64(account1.ID))
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
@@ -44,7 +44,7 @@ func TestGetAccountById(t *testing.T) {
 
 func TestGetAllAccounts(t *testing.T) {
 	for i := 0; i < 5; i++ {
-		createRandomAccount(t)
+		CreateRandomAccount(t)
 	}
 	arg := GetAllAccountsParams{
 		Limit:  5,
@@ -60,7 +60,7 @@ func TestGetAllAccounts(t *testing.T) {
 }
 
 func TestDeleteAccountById(t *testing.T) {
-	account1 := createRandomAccount(t)
+	account1 := CreateRandomAccount(t)
 	id := account1.ID
 	err := testQueries.DeleteAccountById(context.Background(), int64(id))
 	require.NoError(t, err)

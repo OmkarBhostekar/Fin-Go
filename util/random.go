@@ -35,3 +35,7 @@ func RandomCurrency() string {
 	n := len(currency)
 	return currency[rand.Intn(n)]
 }
+
+func RandomAccountID() int64 {
+	return RandomInt(0, 1000)
+}
