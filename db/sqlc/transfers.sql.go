@@ -7,7 +7,6 @@ package simplebank
 
 import (
 	"context"
-	"database/sql"
 )
 
 const createTransfer = `-- name: CreateTransfer :one
@@ -23,8 +22,8 @@ INSERT INTO transfers(
 `
 
 type CreateTransferParams struct {
-	FromAccountID sql.NullInt64
-	ToAccountID   sql.NullInt64
+	FromAccountID int64
+	ToAccountID   int64
 	Amount        int64
 }
 
@@ -106,7 +105,7 @@ SELECT id, from_account_id, to_account_id, amount, "createdAt" FROM transfers
 WHERE from_account_id = $1
 `
 
-func (q *Queries) GetTransfersByFromAccountId(ctx context.Context, fromAccountID sql.NullInt64) ([]Transfer, error) {
+func (q *Queries) GetTransfersByFromAccountId(ctx context.Context, fromAccountID int64) ([]Transfer, error) {
 	rows, err := q.db.QueryContext(ctx, getTransfersByFromAccountId, fromAccountID)
 	if err != nil {
 		return nil, err
@@ -143,8 +142,8 @@ AND to_account_id = $2
 `
 
 type GetTransfersByFromAccountIdAndToAccountIdParams struct {
-	FromAccountID sql.NullInt64
-	ToAccountID   sql.NullInt64
+	FromAccountID int64
+	ToAccountID   int64
 }
 
 func (q *Queries) GetTransfersByFromAccountIdAndToAccountId(ctx context.Context, arg GetTransfersByFromAccountIdAndToAccountIdParams) ([]Transfer, error) {
@@ -181,7 +180,7 @@ SELECT id, from_account_id, to_account_id, amount, "createdAt" FROM transfers
 WHERE to_account_id = $1
 `
 
-func (q *Queries) GetTransfersByToAccountId(ctx context.Context, toAccountID sql.NullInt64) ([]Transfer, error) {
+func (q *Queries) GetTransfersByToAccountId(ctx context.Context, toAccountID int64) ([]Transfer, error) {
 	rows, err := q.db.QueryContext(ctx, getTransfersByToAccountId, toAccountID)
 	if err != nil {
 		return nil, err
