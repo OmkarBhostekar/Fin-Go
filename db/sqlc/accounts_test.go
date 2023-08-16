@@ -4,14 +4,19 @@ import (
 	"context"
 	"testing"
 
+	"example.com/simplebank/util"
 	"github.com/stretchr/testify/require"
 )
 
 func TestCreateAccount(t *testing.T) {
+	createRandomAccount(t)
+}
+
+func createRandomAccount(t *testing.T) Account {
 	arg := CreateAccountParams{
-		Owner:    "Omkar",
-		Balance:  2000,
-		Currency: "INR",
+		Owner:    util.RandomOwner(),
+		Balance:  util.RandomMoney(),
+		Currency: util.RandomCurrency(),
 	}
 	account, err := testQueries.CreateAccount(context.Background(), arg)
 	require.NoError(t, err)
@@ -22,19 +27,25 @@ func TestCreateAccount(t *testing.T) {
 
 	require.NotZero(t, account.ID)
 	require.NotZero(t, account.CreatedAt)
-
+	return account
 }
 
 func TestGetAccountById(t *testing.T) {
-	id := 1
-	account, err := testQueries.GetAcountById(context.Background(), int64(id))
+	account1 := createRandomAccount(t)
+	account, err := testQueries.GetAcountById(context.Background(), int64(account1.ID))
 	require.NoError(t, err)
 	require.NotEmpty(t, account)
-	require.Equal(t, int64(id), account.ID)
+	require.Equal(t, account1.ID, account.ID)
+	require.Equal(t, account1.Owner, account.Owner)
+	require.Equal(t, account1.Balance, account.Balance)
+	require.Equal(t, account1.Currency, account.Currency)
 	require.NotZero(t, account.ID)
 }
 
 func TestGetAllAccounts(t *testing.T) {
+	for i := 0; i < 5; i++ {
+		createRandomAccount(t)
+	}
 	arg := GetAllAccountsParams{
 		Limit:  5,
 		Offset: 0,
@@ -42,4 +53,18 @@ func TestGetAllAccounts(t *testing.T) {
 	accounts, err := testQueries.GetAllAccounts(context.Background(), arg)
 	require.NoError(t, err)
 	require.NotEmpty(t, accounts)
+	require.Len(t, accounts, 5)
+	for _, account := range accounts {
+		require.NotEmpty(t, account)
+	}
+}
+
+func TestDeleteAccountById(t *testing.T) {
+	account1 := createRandomAccount(t)
+	id := account1.ID
+	err := testQueries.DeleteAccountById(context.Background(), int64(id))
+	require.NoError(t, err)
+	account, err := testQueries.GetAcountById(context.Background(), int64(id))
+	require.Error(t, err)
+	require.Empty(t, account)
 }
