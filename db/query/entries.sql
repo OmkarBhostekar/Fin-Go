@@ -1,7 +1,7 @@
 -- name: CreateEntry :one
 INSERT INTO entries(
     account_id,
-    amount,
+    amount
 ) VALUES (
     $1,
     $2
@@ -20,6 +20,7 @@ OFFSET $2;
 UPDATE entries
 SET amount = $1
 WHERE id = $2
+RETURNING *;
 
 -- name: DeleteEntryById :exec
 DELETE FROM entries
