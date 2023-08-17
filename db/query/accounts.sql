@@ -12,16 +12,20 @@ INSERT INTO accounts(
 -- name: GetAcountById :one
 SELECT * FROM accounts WHERE id = $1 LIMIT 1;
 
+
+-- name: GetAcountForUpdate :one
+SELECT * FROM accounts WHERE id = $1 LIMIT 1 FOR NO KEY UPDATE;
+
 -- name: GetAllAccounts :many
 SELECT * FROM accounts 
 ORDER BY id
 LIMIT $1
 OFFSET $2;
 
--- name: UpdateAccountBalance :exec
+-- name: UpdateAccountBalance :one
 UPDATE accounts
-SET balance = $1
-WHERE id = $2
+SET balance = balance + sqlc.arg(amount)
+WHERE id = sqlc.arg(id)
 RETURNING *;
 
 -- name: DeleteAccountById :exec
