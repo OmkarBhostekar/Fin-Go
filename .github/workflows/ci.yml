@@ -13,7 +13,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres16
+        image: postgres
         env:
           POSTGRES_USER: root
           POSTGRES_PASSWORD: secret
@@ -23,6 +23,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+        container-name: postgres16
 
     steps:
       - name: Set up Go 1.21
