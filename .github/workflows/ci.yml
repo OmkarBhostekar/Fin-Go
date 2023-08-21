@@ -48,7 +48,8 @@ jobs:
       - name: Install golang migrate
         run: |
           curl -L https://github.com/golang-migrate/migrate/releases/download/v4.16.2/migrate.linux-amd64.tar.gz | tar xvz
-
+          sudo mv migrate.linux-amd64 /user/bin/
+          which migrate
       - name: Make migrations
         run: make migrateup
 
