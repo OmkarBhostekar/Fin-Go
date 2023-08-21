@@ -23,7 +23,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-        container-name: postgres16
 
     steps:
       - name: Set up Go 1.21
@@ -45,6 +44,10 @@ jobs:
 
       # - name: Build
       #   run: go build -v ./...
+
+      - name: Install golang migrate
+        run: |
+          curl -L https://github.com/golang-migrate/migrate/releases/tag/v4.16.2 | tar xvz
 
       - name: Make migrations
         run: make migrateup
