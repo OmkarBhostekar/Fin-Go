@@ -50,6 +50,17 @@ func (q *Queries) DeleteAccountById(ctx context.Context, id int64) error {
 	return err
 }
 
+const getAccountsCount = `-- name: GetAccountsCount :one
+SELECT COUNT(*) FROM accounts
+`
+
+func (q *Queries) GetAccountsCount(ctx context.Context) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getAccountsCount)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const getAcountById = `-- name: GetAcountById :one
 SELECT id, owner, balance, currency, "createdAt" FROM accounts WHERE id = $1 LIMIT 1
 `

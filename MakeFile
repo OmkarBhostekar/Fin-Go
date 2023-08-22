@@ -14,3 +14,5 @@ test:
 	go test -v -cover ./...
 
 .PHONY: postgres createdb dropdb migrateup migratedown sqlc test
+
+# to run sqlc on windows - docker run --rm -v "D:\Development\Go\Golang Backend Course\golang-simple-bank:/src" -w /src sqlc/sqlc generate

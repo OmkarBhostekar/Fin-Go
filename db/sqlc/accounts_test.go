@@ -8,6 +8,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestCreate5Account(t *testing.T) {
+	for i := 0; i < 5; i++ {
+		CreateRandomAccount(t)
+	}
+}
 func TestCreateAccount(t *testing.T) {
 	CreateRandomAccount(t)
 }

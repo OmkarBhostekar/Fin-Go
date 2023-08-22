@@ -31,3 +31,6 @@ RETURNING *;
 -- name: DeleteAccountById :exec
 DELETE FROM accounts
 WHERE id = $1;
+
+-- name: GetAccountsCount :one
+SELECT COUNT(*) FROM accounts;
