@@ -44,7 +44,7 @@ jobs:
           ls
 
       - name: Run migrations
-        run: make migrateup
+        run: migrate -path ./db/migration -database "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable" -verbose up
 
       - name: Test
-        run: make test
+        run: go test -v -cover ./...
