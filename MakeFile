@@ -12,7 +12,9 @@ sqlc:
 	sqlc generate
 test:
 	go test -v -cover ./...
+mock:
+	mockgen -destination db/mock/store.go example.com/simplebank/db/sqlc Store
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test mock
 
 # to run sqlc on windows - docker run --rm -v "D:\Development\Go\Golang Backend Course\golang-simple-bank:/src" -w /src sqlc/sqlc generate

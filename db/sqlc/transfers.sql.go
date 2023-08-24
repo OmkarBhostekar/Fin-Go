@@ -22,9 +22,9 @@ INSERT INTO transfers(
 `
 
 type CreateTransferParams struct {
-	FromAccountID int64
-	ToAccountID   int64
-	Amount        int64
+	FromAccountID int64 `json:"from_account_id"`
+	ToAccountID   int64 `json:"to_account_id"`
+	Amount        int64 `json:"amount"`
 }
 
 func (q *Queries) CreateTransfer(ctx context.Context, arg CreateTransferParams) (Transfer, error) {
@@ -60,7 +60,7 @@ func (q *Queries) GetAllTransfers(ctx context.Context) ([]Transfer, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Transfer
+	items := []Transfer{}
 	for rows.Next() {
 		var i Transfer
 		if err := rows.Scan(
@@ -111,7 +111,7 @@ func (q *Queries) GetTransfersByFromAccountId(ctx context.Context, fromAccountID
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Transfer
+	items := []Transfer{}
 	for rows.Next() {
 		var i Transfer
 		if err := rows.Scan(
@@ -142,8 +142,8 @@ AND to_account_id = $2
 `
 
 type GetTransfersByFromAccountIdAndToAccountIdParams struct {
-	FromAccountID int64
-	ToAccountID   int64
+	FromAccountID int64 `json:"from_account_id"`
+	ToAccountID   int64 `json:"to_account_id"`
 }
 
 func (q *Queries) GetTransfersByFromAccountIdAndToAccountId(ctx context.Context, arg GetTransfersByFromAccountIdAndToAccountIdParams) ([]Transfer, error) {
@@ -152,7 +152,7 @@ func (q *Queries) GetTransfersByFromAccountIdAndToAccountId(ctx context.Context,
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Transfer
+	items := []Transfer{}
 	for rows.Next() {
 		var i Transfer
 		if err := rows.Scan(
@@ -186,7 +186,7 @@ func (q *Queries) GetTransfersByToAccountId(ctx context.Context, toAccountID int
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Transfer
+	items := []Transfer{}
 	for rows.Next() {
 		var i Transfer
 		if err := rows.Scan(
