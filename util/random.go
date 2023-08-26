@@ -39,3 +39,7 @@ func RandomCurrency() string {
 func RandomAccountID() int64 {
 	return RandomInt(0, 1000)
 }
+
+func RandomEmail() string {
+	return RandomString(6) + "@gmail.com"
+}
