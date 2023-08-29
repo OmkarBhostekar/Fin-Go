@@ -43,3 +43,11 @@ func RandomAccountID() int64 {
 func RandomEmail() string {
 	return RandomString(6) + "@gmail.com"
 }
+
+func RandomTimestamp() time.Time {
+	return time.Now().Add(time.Duration(RandomInt(-1000, 0)) * time.Hour)
+}
+
+func RandomPassword() string {
+	return RandomString(10)
+}
