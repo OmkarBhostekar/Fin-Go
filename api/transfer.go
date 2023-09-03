@@ -7,6 +7,7 @@ import (
 
 	db "example.com/simplebank/db/sqlc"
 	simplebank "example.com/simplebank/db/sqlc"
+	"example.com/simplebank/token"
 	"github.com/gin-gonic/gin"
 )
 
@@ -23,9 +24,15 @@ func (server *Server) CreateTransfer(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, errorResponse(err))
 		return
 	}
+	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	// check currency of both account
 	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
 	if !valid {
+		return
+	}
+	if authPayload.Username != fromAccount.Owner {
+		err := fmt.Errorf("from account doesn't belong to the authenticated user")
+		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
 	toAccount, valid := server.validAccount(ctx, req.ToAccountID, req.Currency)

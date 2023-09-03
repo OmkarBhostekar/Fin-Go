@@ -23,16 +23,20 @@ func NewJWTMaker(secretkey string) (Maker, error) {
 	if len(secretkey) < minSecretKeySize {
 		return nil, fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
 	}
-	return &JWTMaker{secretKey: secretkey}, nil
+	return &JWTMaker{secretkey}, nil
 }
 
-func (jwtMaker *JWTMaker) CreateToken(username string, duration time.Duration) (string, error) {
+func (jwtMaker *JWTMaker) CreateToken(username string, duration time.Duration) (string, *Payload, error) {
 	payload, err := NewPayload(username, duration)
 	if err != nil {
-		return "", nil
+		return "", nil, err
 	}
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
-	return jwtToken.SignedString([]byte(jwtMaker.secretKey))
+	token, err := jwtToken.SignedString([]byte(jwtMaker.secretKey))
+	if err != nil {
+		return "", nil, err
+	}
+	return token, payload, nil
 
 }
 

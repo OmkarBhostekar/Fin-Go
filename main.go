@@ -24,7 +24,7 @@ func main() {
 	log.Printf("connected to db: %v", conn)
 
 	store := db.NewStore(conn)
-	server := api.NewServer(store)
+	server, err := api.NewServer(config, store)
 
 	er := server.Start(config.ServerAddress)
 	if er != nil {

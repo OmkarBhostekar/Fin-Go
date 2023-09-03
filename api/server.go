@@ -1,7 +1,11 @@
 package api
 
 import (
+	"fmt"
+
 	db "example.com/simplebank/db/sqlc"
+	"example.com/simplebank/token"
+	"example.com/simplebank/util"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
@@ -9,34 +13,45 @@ import (
 
 // this server will be used to handle all the requests from the client
 type Server struct {
-	store  db.Store
-	router *gin.Engine
+	store      db.Store
+	tokenMaker token.Maker
+	config     util.Config
+	router     *gin.Engine
 }
 
 // Creates new server instance
-func NewServer(store db.Store) *Server {
-	server := &Server{store: store}
-	router := gin.Default()
+func NewServer(config util.Config, store db.Store) (*Server, error) {
+	maker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	if err != nil {
+		return nil, fmt.Errorf("cannot create token maker %w", err)
+	}
+	server := &Server{store: store, tokenMaker: maker, config: config}
 
 	if v, ok := binding.Validator.Engine().(*validator.Validate); ok {
 		v.RegisterValidation("currency", validCurrency)
 	}
 
+	server.setupRouter()
+
+	return server, nil
+
+}
+
+func (server *Server) setupRouter() {
+	router := gin.Default()
 	router.GET("hello", server.helloWorld)
+	router.POST("/auth/register", server.CreateUser)
+	router.POST("/auth/login", server.LoginUser)
+
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 
 	// account handlers
-	router.POST("/accounts", server.CreateAccount)
-	router.GET("/accounts/:id", server.GetAccount)
-	router.GET("/accounts", server.ListAccounts)
-	router.POST("/transfers", server.CreateTransfer)
-	router.POST("/register", server.CreateUser)
-	router.POST("/login", server.LoginUser)
-	router.GET("/users/:username", server.GetUser)
-
+	authRoutes.POST("/accounts", server.CreateAccount)
+	authRoutes.GET("/accounts/:id", server.GetAccount)
+	authRoutes.GET("/accounts", server.ListAccounts)
+	authRoutes.POST("/transfers", server.CreateTransfer)
+	authRoutes.GET("/users/:username", server.GetUser)
 	server.router = router
-
-	return server
-
 }
 
 func (server *Server) helloWorld(ctx *gin.Context) {

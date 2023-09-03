@@ -70,6 +70,11 @@ type LoginUserRequest struct {
 	Password string `json:"password" binding:"required,min=6"`
 }
 
+type LoginUserResponse struct {
+	AccessToken string       `json:"access_token" binding:"required"`
+	User        UserResponse `json:"user" binding:"required"`
+}
+
 func (server *Server) LoginUser(ctx *gin.Context) {
 	var req LoginUserRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {
@@ -86,8 +91,16 @@ func (server *Server) LoginUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
-	// TODO: generate token
-	ctx.JSON(http.StatusOK, user)
+	access, _, err := server.tokenMaker.CreateToken(user.Username, server.config.AccessTokenDuration)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
+		return
+	}
+	rsp := LoginUserResponse{
+		AccessToken: access,
+		User:        newUserResponse(user),
+	}
+	ctx.JSON(http.StatusOK, rsp)
 }
 
 type GetUserRequest struct {
