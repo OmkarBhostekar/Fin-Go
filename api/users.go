@@ -49,7 +49,7 @@ func (server *Server) CreateUser(ctx *gin.Context) {
 	}
 
 	arg := db.CreateUserParams{
-		Username:       req.Username,
+		Username:       strings.ToLower(req.Username),
 		HashedPassword: hashedPassword,
 		FullName:       req.FullName,
 		Email:          req.Email,
