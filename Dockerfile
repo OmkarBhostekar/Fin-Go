@@ -18,6 +18,8 @@ COPY wait-for.sh .
 COPY --from=builder /app/migrate.linux-amd64 ./migrate
 COPY db/migration ./db/migration
 
+RUN chmod +x /app/start.sh
+RUN chmod +x /app/wait-for.sh
 EXPOSE 8080
 CMD [ "/app/main" ]
 ENTRYPOINT [ "/app/start.sh" ]
