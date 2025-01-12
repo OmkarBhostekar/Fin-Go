@@ -92,8 +92,8 @@ func (server *Server) ListAccounts(ctx *gin.Context) {
 	}
 	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	arg := db.GetAllAccountsParams{
-		Limit:  req.PageSize,
-		Offset: (req.PageID - 1) * req.PageSize,
+		Limit:  int64(req.PageSize),
+		Offset: int64((req.PageID - 1) * req.PageSize),
 		Owner:  authPayload.Username,
 	}
 	accounts, err := server.store.GetAllAccounts(ctx, arg)
