@@ -14,4 +14,4 @@ sql:
         emit_empty_slices: true
 
     database:
-      uri: "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable"
+      uri: "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable" 
