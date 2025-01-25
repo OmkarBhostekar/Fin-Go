@@ -21,11 +21,21 @@ service FinGo {
             post: "/v1/create_user"
             body: "*"
         };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            tags: ["User"]
+            summary: "Create a new user"
+            description: "Use this API to create a new user."
+        };
     }
     rpc LoginUser (LoginUserRequest) returns (LoginUserResponse) {
         option (google.api.http) = {
             post: "/v1/login_user"
             body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            tags: ["User"]
+            summary: "Login a user"
+            description: "Use this API to login a user."
         };
     }
 }
