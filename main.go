@@ -19,6 +19,9 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	_ "github.com/lib/pq"
 	"github.com/rakyll/statik/fs"
+	"github.com/golang-migrate/migrate/v4"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 )
 
 func main() {
@@ -32,6 +35,8 @@ func main() {
 	}
 
 	log.Printf("connected to db: %v", conn)
+
+	runDBMigration(config.MIGRATION_URL, config.DBSource)	
 
 	store := db.NewStore(conn)
 	go runGatewayServer(config, store)
@@ -113,4 +118,16 @@ func runGatewayServer(config util.Config, store db.Store) {
 		log.Fatal("cannot start HTTP gateway server: ", err)
 	}
 
+}
+
+func runDBMigration(migrationURL string, dbUrl string) {
+	migration, err := migrate.New(migrationURL, dbUrl)
+	if err != nil {
+		log.Fatal("cannot create migration: ", err)
+	}
+	if err := migration.Up(); err != nil && err != migrate.ErrNoChange {
+		log.Fatal("cannot migrate db: ", err)
+	}
+
+	log.Printf("migrated db schema")
 }
