@@ -2,8 +2,6 @@ package gapi
 
 import (
 	"context"
-	"log"
-
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/peer"
 )
@@ -36,6 +34,5 @@ func (server *Server) extractMetadata(ctx context.Context) *Metadata {
 	if p, ok := peer.FromContext(ctx); ok {
 		mtdt.ClientIP = p.Addr.String()
 	}
-	log.Printf("metadata: %v", mtdt)
 	return mtdt
 }
