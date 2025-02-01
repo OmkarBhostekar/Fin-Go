@@ -14,10 +14,14 @@ import (
 )
 
 func (server *Server) UpdateUser(ctx context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserResponse, error) {
-	// hashedPassword, err := util.HashPassword(req.GetPassword())
-	// if err != nil {
-	// 	return nil, status.Errorf(codes.Internal, "failed to hash password %s", err)
-	// }
+	authPayload, err := server.authorizeUser(ctx)
+	if err != nil {
+		return nil, status.Errorf(codes.PermissionDenied, "unauthorized: %s", err)
+	}
+
+	if authPayload.Username != strings.ToLower(req.GetUsername()) {
+		return nil, status.Errorf(codes.PermissionDenied, "can't update other user's profile")
+	}
 
 	arg := db.UpdateUserParams{
 		Username: strings.ToLower(req.GetUsername()),
