@@ -6,13 +6,13 @@ require (
 	github.com/aead/chacha20poly1305 v0.0.0-20201124145622-1a5aba2a8b29
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.25.1
 	github.com/hibiken/asynq v0.25.1
+	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/lib/pq v1.10.9
 	github.com/o1egl/paseto v1.0.0
 	github.com/rakyll/statik v0.1.7
 	github.com/stretchr/testify v1.10.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241219192143-6b3ec007d9bb
 	google.golang.org/grpc v1.69.4
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.5.1
 )
 
 require (
