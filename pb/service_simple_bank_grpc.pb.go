@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	FinGo_CreateUser_FullMethodName = "/pb.FinGo/CreateUser"
-	FinGo_UpdateUser_FullMethodName = "/pb.FinGo/UpdateUser"
-	FinGo_LoginUser_FullMethodName  = "/pb.FinGo/LoginUser"
+	FinGo_CreateUser_FullMethodName  = "/pb.FinGo/CreateUser"
+	FinGo_UpdateUser_FullMethodName  = "/pb.FinGo/UpdateUser"
+	FinGo_LoginUser_FullMethodName   = "/pb.FinGo/LoginUser"
+	FinGo_VerifyEmail_FullMethodName = "/pb.FinGo/VerifyEmail"
 )
 
 // FinGoClient is the client API for FinGo service.
@@ -31,6 +32,7 @@ type FinGoClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserResponse, error)
 	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
+	VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*VerifyEmailResponse, error)
 }
 
 type finGoClient struct {
@@ -71,6 +73,16 @@ func (c *finGoClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts 
 	return out, nil
 }
 
+func (c *finGoClient) VerifyEmail(ctx context.Context, in *VerifyEmailRequest, opts ...grpc.CallOption) (*VerifyEmailResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(VerifyEmailResponse)
+	err := c.cc.Invoke(ctx, FinGo_VerifyEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // FinGoServer is the server API for FinGo service.
 // All implementations must embed UnimplementedFinGoServer
 // for forward compatibility.
@@ -78,6 +90,7 @@ type FinGoServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserResponse, error)
 	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
+	VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailResponse, error)
 	mustEmbedUnimplementedFinGoServer()
 }
 
@@ -96,6 +109,9 @@ func (UnimplementedFinGoServer) UpdateUser(context.Context, *UpdateUserRequest) 
 }
 func (UnimplementedFinGoServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
+}
+func (UnimplementedFinGoServer) VerifyEmail(context.Context, *VerifyEmailRequest) (*VerifyEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyEmail not implemented")
 }
 func (UnimplementedFinGoServer) mustEmbedUnimplementedFinGoServer() {}
 func (UnimplementedFinGoServer) testEmbeddedByValue()               {}
@@ -172,6 +188,24 @@ func _FinGo_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	return interceptor(ctx, in, info, handler)
 }
 
+func _FinGo_VerifyEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(FinGoServer).VerifyEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: FinGo_VerifyEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(FinGoServer).VerifyEmail(ctx, req.(*VerifyEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // FinGo_ServiceDesc is the grpc.ServiceDesc for FinGo service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -190,6 +224,10 @@ var FinGo_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "LoginUser",
 			Handler:    _FinGo_LoginUser_Handler,
+		},
+		{
+			MethodName: "VerifyEmail",
+			Handler:    _FinGo_VerifyEmail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

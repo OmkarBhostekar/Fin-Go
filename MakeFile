@@ -13,6 +13,9 @@ migrateup1:
 migratedown1:
 	migrate -path ./db/migration -database "postgresql://root:secret@localhost:5432/simplebank?sslmode=disable" -verbose down 1
 
+new_migration:
+	migrate create -ext sql -dir db/migration -seq $(name)
+
 sqlc:
 	sqlc generate
 test:
@@ -33,6 +36,6 @@ proto:
 evans:
 	evans --host localhost --port 9090 -r repl
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc test mock proto evans
+.PHONY: postgres createdb dropdb migrateup migratedown sqlc test mock proto evans new_migration
 
 # to run sqlc on windows - docker run --rm -v "D:\Development\Go\Golang Backend Course\golang-simple-bank:/src" -w /src sqlc/sqlc generate
